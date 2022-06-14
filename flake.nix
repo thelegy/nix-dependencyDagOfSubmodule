@@ -1,14 +1,21 @@
 {
 
-  outputs = flakes@{ nixpkgs, ... }: rec {
+  outputs = flakes@{ self, nixpkgs }: {
 
-    lib = import ./lib flakes;
+    lib =
+      let
+        extraLib = lib: {
+          types.dependencyDagOfSubmodule = import ./dependencyDagOfSubmodule.nix lib;
+        };
+      in
+      extraLib nixpkgs.lib // {
+        bake = lib: lib.recursiveUpdate lib (extraLib lib);
+      };
 
-    nixosModules = import ./modules flakes;
-
-    overlay = import ./pkgs flakes;
-
-    checks = lib.withPkgsFor [ "x86_64-linux" ] nixpkgs [ overlay ] (import ./checks flakes);
+    checks.x86_64-linux.evaluationCheck =
+      let
+      in
+      nixpkgs.legacyPackages.x86_64-linux.callPackage ./checks.nix { lib = self.lib.bake nixpkgs.lib; };
 
   };
 

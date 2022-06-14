@@ -1,10 +1,8 @@
-{ wat-run-tests
+{ emptyDirectory
 , lib
 , path
 , system
-, watLib
-}:
-with watLib;
+}: with lib;
 
 let
 
@@ -30,8 +28,17 @@ let
     };
   };
 
+  run-tests = tests:
+    let
+      testResults = runTests tests;
+    in
+    if length testResults > 0 then
+      traceSeqN 10 testResults (throw "At least one tests did not match its expected outcome")
+    else
+      emptyDirectory;
+
 in
-wat-run-tests {
+run-tests {
 
   testTieBreaker = machineTest ({ config, ... }: {
     imports = [ sampleOption ];
