@@ -34,20 +34,25 @@ rec {
 
   dependencyDagOfSubmodule = module: let
 
-    mod = types.submodule (module // { options = {
-      enabled = mkOption {
-        type = types.bool;
-        default = true;
+    mod = let
+      dagModule.options = {
+        enabled = mkOption {
+          type = types.bool;
+          default = true;
+        };
+        after = mkOption {
+          type = types.nonEmptyListOf types.str;
+          default = [ "early" ];
+        };
+        before = mkOption {
+          type = types.nonEmptyListOf types.str;
+          default = [ "late" ];
+        };
       };
-      after = mkOption {
-        type = types.nonEmptyListOf types.str;
-        default = [ "early" ];
-      };
-      before = mkOption {
-        type = types.nonEmptyListOf types.str;
-        default = [ "late" ];
-      };
-    } // module.options; });
+    in types.submoduleWith {
+      modules = [ module dagModule ];
+      shorthandOnlyDefinesConfig = true;
+    };
 
     type = types.attrsOf mod // {
       name = "dependencyDagOfSubmodule";

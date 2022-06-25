@@ -169,5 +169,26 @@ run-tests {
     };
   });
 
+  testComplexSubmodule = machineTest ({ config, ... }: {
+    options.sample = mkOption {
+      type = types.dependencyDagOfSubmodule ({ name, ... }: {
+        options.value = mkOption {
+          type = types.anything;
+        };
+        options.name = mkOption {
+          type = types.anything;
+        };
+        config.name = mkDefault name;
+      });
+    };
+    config.sample = {
+      a.value = 1;
+      b.value = 2;
+    };
+    config.output = {
+      expr = map (x: "${x.name}: ${toString x.value}") (toOrderedList config.sample);
+      expected = [ "a: 1" "b: 2" ];
+    };
+  });
 
 }
