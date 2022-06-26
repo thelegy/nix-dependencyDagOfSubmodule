@@ -23,7 +23,7 @@ rec {
     partialOrder = x: y: elem x (dependencies.${y} or []);
     orderedNodes = toposort partialOrder nodes;
     orderedList = concatMap (node: toList (attrs.${node} or [])) orderedNodes.result;
-    filtedList = filter (x: x.enabled) orderedList;
+    filtedList = filter (x: x.enable) orderedList;
     noLoopAssertion = assertMsg (attrNames orderedNodes == [ "result" ]) "Detected cycle in dependencyDagOfSubmodule: ${generators.toJSON {} orderedNodes}";
     nonReflexivityAssertions = forEach (attrNames attrs) (node: assertMsg (! (partialOrder node node)) "Detected cycle in dependencyDagOfSubmodule: Node \"${node}\" loops onto itself");
     assertions = assertMultiple [
@@ -36,7 +36,7 @@ rec {
 
     mod = let
       dagModule.options = {
-        enabled = mkOption {
+        enable = mkOption {
           type = types.bool;
           default = true;
         };

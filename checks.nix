@@ -144,7 +144,7 @@ run-tests {
     sample = {
       a.value = 1;
       b.value = 2;
-      b.enabled = false;
+      b.enable = false;
       c.value = 3;
     };
     output = {
@@ -160,7 +160,7 @@ run-tests {
       b.value = 2;
       b.after = [ "c" ];
       b.before = [ "a" ];
-      b.enabled = false;
+      b.enable = false;
       c.value = 3;
     };
     output = {
