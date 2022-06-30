@@ -43,19 +43,39 @@ rec {
   dependencyDagOfSubmodule = module: let
 
     mod = let
-      dagModule.options = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
+      dagModule = { config, ... }: {
+        options = {
+          enable = mkOption {
+            type = types.bool;
+            default = true;
+          };
+          after = mkOption {
+            type = types.nonEmptyListOf types.str;
+            default = [ "early" ];
+          };
+          before = mkOption {
+            type = types.nonEmptyListOf types.str;
+            default = [ "late" ];
+          };
+          early = mkOption {
+            type = types.bool;
+            default = false;
+          };
+          late = mkOption {
+            type = types.bool;
+            default = false;
+          };
         };
-        after = mkOption {
-          type = types.nonEmptyListOf types.str;
-          default = [ "early" ];
-        };
-        before = mkOption {
-          type = types.nonEmptyListOf types.str;
-          default = [ "late" ];
-        };
+        config = mkMerge [
+          (mkIf config.early {
+            after = [ "veryEarly" ];
+            before = [ "early" ];
+          })
+          (mkIf config.late {
+            after = [ "late" ];
+            before = [ "veryLate" ];
+          })
+        ];
       };
     in types.submoduleWith {
       modules = [ module dagModule ];

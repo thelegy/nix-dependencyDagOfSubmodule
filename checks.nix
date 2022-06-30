@@ -199,6 +199,21 @@ run-tests {
     };
   });
 
+  testEarlyLate = machineTest ({ config, ... }: {
+    imports = [ sampleOption ];
+    sample = {
+      a.late = true;
+      a.value = 1;
+      b.value = 2;
+      c.early = true;
+      c.value = 3;
+    };
+    output = {
+      expr = map (x: x.value) (toOrderedList config.sample);
+      expected = [ 3 2 1 ];
+    };
+  });
+
   testComplexSubmodule = machineTest ({ config, ... }: {
     options.sample = mkOption {
       type = types.dependencyDagOfSubmodule ({ name, ... }: {
