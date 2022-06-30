@@ -186,11 +186,11 @@ run-tests {
   testPredefinedOrder = machineTest ({ config, ... }: {
     imports = [ sampleOption ];
     sample = {
-      a.after = [ "late" ];
-      a.before = [ "veryLate" ];
+      a.after = mkForce [ "late" ];
+      a.before = mkForce [ "veryLate" ];
       a.value = 1;
-      b.after = [ "veryEarly" ];
-      b.before = [ "early" ];
+      b.after = mkForce [ "veryEarly" ];
+      b.before = mkForce [ "early" ];
       b.value = 2;
     };
     output = {

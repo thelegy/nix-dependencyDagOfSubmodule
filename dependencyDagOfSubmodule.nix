@@ -51,11 +51,9 @@ rec {
           };
           after = mkOption {
             type = types.nonEmptyListOf types.str;
-            default = [ "early" ];
           };
           before = mkOption {
             type = types.nonEmptyListOf types.str;
-            default = [ "late" ];
           };
           early = mkOption {
             type = types.bool;
@@ -74,6 +72,10 @@ rec {
           (mkIf config.late {
             after = [ "late" ];
             before = [ "veryLate" ];
+          })
+          (mkIf (! config.early && ! config.late) {
+            after = [ "early" ];
+            before = [ "late" ];
           })
         ];
       };
