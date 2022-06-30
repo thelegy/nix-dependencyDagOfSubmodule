@@ -15,10 +15,18 @@ rec {
       (attrNames attrs)
       (pipe attrs [(mapAttrsToList (_: x: x.after)) concatLists])
       (pipe attrs [(mapAttrsToList (_: x: x.before)) concatLists])
+
+      # Add predefined nodes
+      [ "veryEarly" "early" "late" "veryLate" ]
     ]);
     dependencies = genAttrs nodes (node: unique (concatLists [
       (attrs.${node}.after or [])
       (filter (other: elem node attrs.${other}.before) (attrNames attrs))
+
+      # Add implicit order for predifined nodes
+      (optional (elem node [ "early" "late" "veryLate" ]) "veryEarly")
+      (optional (elem node [ "late" "veryLate" ]) "early")
+      (optional (elem node [ "veryLate" ]) "late")
     ]));
     partialOrder = x: y: elem x (dependencies.${y} or []);
     orderedNodes = toposort partialOrder nodes;

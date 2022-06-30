@@ -183,6 +183,22 @@ run-tests {
     };
   });
 
+  testPredefinedOrder = machineTest ({ config, ... }: {
+    imports = [ sampleOption ];
+    sample = {
+      a.after = [ "late" ];
+      a.before = [ "veryLate" ];
+      a.value = 1;
+      b.after = [ "veryEarly" ];
+      b.before = [ "early" ];
+      b.value = 2;
+    };
+    output = {
+      expr = map (x: x.value) (toOrderedList config.sample);
+      expected = [ 2 1 ];
+    };
+  });
+
   testComplexSubmodule = machineTest ({ config, ... }: {
     options.sample = mkOption {
       type = types.dependencyDagOfSubmodule ({ name, ... }: {
