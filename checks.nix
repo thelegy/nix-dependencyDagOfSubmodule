@@ -139,6 +139,20 @@ run-tests {
     };
   });
 
+  testImplicitOrder = machineTest ({ config, ... }: {
+    imports = [ sampleOption ];
+    sample = {
+      a.after = [ "foo" ];
+      a.value = 1;
+      b.before = [ "foo" ];
+      b.value = 2;
+    };
+    output = {
+      expr = map (x: x.value) (toOrderedList config.sample);
+      expected = [ 2 1 ];
+    };
+  });
+
   testIgnoreDisabled = machineTest ({ config, ... }: {
     imports = [ sampleOption ];
     sample = {
