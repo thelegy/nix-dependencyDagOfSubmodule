@@ -2,11 +2,13 @@
   emptyDirectory,
   lib,
   path,
-  system,
+  stdenv,
 }:
 with lib;
 
 let
+
+  system = stdenv.hostPlatform.system;
 
   toOrderedList = types.dependencyDagOfSubmodule.toOrderedList;
 
