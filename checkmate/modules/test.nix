@@ -8,10 +8,10 @@ let
     types
     ;
 
-  targetLib = inputs.target.lib.bake lib;
+  targetLib = inputs.target.lib lib;
 
-  inherit (targetLib.types) dependencyDagOfSubmodule;
-  inherit (dependencyDagOfSubmodule) toOrderedList;
+  dependencyDagOfSubmodule = targetLib.type;
+  inherit (targetLib) toOrderedList;
 
   sampleOption = {
     options.sample = mkOption {
