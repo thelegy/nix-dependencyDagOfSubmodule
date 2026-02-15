@@ -8,14 +8,11 @@ let
     types
     ;
 
-  targetLib = inputs.target.lib lib;
-
-  dependencyDagOfSubmodule = targetLib.type;
-  inherit (targetLib) toOrderedList;
+  dependencyDagOfSubmodule = inputs.target.lib lib;
 
   sampleOption = {
     options.sample = mkOption {
-      type = dependencyDagOfSubmodule {
+      type = dependencyDagOfSubmodule.type {
         options.value = mkOption {
           type = types.anything;
         };
@@ -31,7 +28,7 @@ let
         {
           options.expr = mkOption {
             type = types.anything;
-            default = map (x: x.value) (toOrderedList config.sample);
+            default = map (x: x.value) (dependencyDagOfSubmodule.toOrderedList config.sample);
           };
           options.expected = mkOption { type = types.anything; };
         };
@@ -99,7 +96,7 @@ let
         a.value = 1;
         a.after = [ "a" ];
       };
-      expr = builtins.tryEval (toOrderedList config.sample);
+      expr = builtins.tryEval (dependencyDagOfSubmodule.toOrderedList config.sample);
       expected = {
         success = false;
         value = false;
@@ -117,7 +114,7 @@ let
         b.after = [ "a" ];
         b.before = [ "a" ];
       };
-      expr = builtins.tryEval (toOrderedList config.sample);
+      expr = builtins.tryEval (dependencyDagOfSubmodule.toOrderedList config.sample);
       expected = {
         success = false;
         value = false;
@@ -137,7 +134,7 @@ let
         c.value = 3;
         c.after = [ "a" ];
       };
-      expr = builtins.tryEval (toOrderedList config.sample);
+      expr = builtins.tryEval (dependencyDagOfSubmodule.toOrderedList config.sample);
       expected = {
         success = false;
         value = false;
@@ -243,7 +240,7 @@ let
     { config, ... }:
     {
       options.sample = mkOption {
-        type = dependencyDagOfSubmodule (
+        type = dependencyDagOfSubmodule.type (
           { name, ... }:
           {
             options.value = mkOption {
@@ -261,7 +258,9 @@ let
           a.value = 1;
           b.value = 2;
         };
-        expr = map (x: "${x.name}: ${toString x.value}") (toOrderedList config.sample);
+        expr = map (x: "${x.name}: ${toString x.value}") (
+          dependencyDagOfSubmodule.toOrderedList config.sample
+        );
         expected = [
           "a: 1"
           "b: 2"
