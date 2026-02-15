@@ -161,7 +161,6 @@ rec {
     in
     type;
 
-  __functionArgs = { };
   __functor = self: dependencyDagOfSubmodule;
 
 }
