@@ -5,17 +5,17 @@ let
     mkDefault
     mkForce
     mkOption
+    types
     ;
 
   targetLib = inputs.target.lib.bake lib;
 
-  inherit (targetLib) types;
-
-  toOrderedList = types.dependencyDagOfSubmodule.toOrderedList;
+  inherit (targetLib.types) dependencyDagOfSubmodule;
+  inherit (dependencyDagOfSubmodule) toOrderedList;
 
   sampleOption = {
     options.sample = mkOption {
-      type = types.dependencyDagOfSubmodule {
+      type = dependencyDagOfSubmodule {
         options.value = mkOption {
           type = types.anything;
         };
@@ -243,7 +243,7 @@ let
     { config, ... }:
     {
       options.sample = mkOption {
-        type = types.dependencyDagOfSubmodule (
+        type = dependencyDagOfSubmodule (
           { name, ... }:
           {
             options.value = mkOption {
