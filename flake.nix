@@ -9,7 +9,7 @@
       lib =
         let
           extraLib = lib: {
-            types.dependencyDagOfSubmodule = import ./dependencyDagOfSubmodule.nix lib;
+            types.dependencyDagOfSubmodule = import ./default.nix lib;
           };
         in
         extraLib nixpkgs.lib
