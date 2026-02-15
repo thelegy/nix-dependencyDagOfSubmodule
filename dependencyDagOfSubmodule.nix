@@ -1,7 +1,29 @@
 lib:
-with lib;
 
 let
+  inherit (lib)
+    assertMsg
+    attrNames
+    concatLists
+    concatMap
+    elem
+    filter
+    flatten
+    foldl'
+    forEach
+    genAttrs
+    generators
+    mapAttrsToList
+    mkIf
+    mkMerge
+    mkOption
+    optional
+    pipe
+    toList
+    toposort
+    types
+    unique
+    ;
   assertMultiple =
     assertions:
     pipe assertions [
