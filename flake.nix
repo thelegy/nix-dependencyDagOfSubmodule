@@ -1,7 +1,9 @@
 {
 
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
   outputs =
-    flakes@{ self, nixpkgs }:
+    { self, nixpkgs }:
     {
 
       lib =
@@ -15,10 +17,9 @@
           bake = lib: lib.recursiveUpdate lib (extraLib lib);
         };
 
-      checks.x86_64-linux.evaluationCheck =
-        let
-        in
-        nixpkgs.legacyPackages.x86_64-linux.callPackage ./checks.nix { lib = self.lib.bake nixpkgs.lib; };
+      checks.x86_64-linux.evaluationCheck = nixpkgs.legacyPackages.x86_64-linux.callPackage ./checks.nix {
+        lib = self.lib.bake nixpkgs.lib;
+      };
 
     };
 
